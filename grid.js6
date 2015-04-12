@@ -7,18 +7,32 @@ export var TILE_TYPE = {
 };
 
 export class Tile {
-    constructor(type, style, isDiggable) {
+    constructor(type, style, isDiggable, isPassable, isClimable) {
         this._type = type;
         this._style = style;
         this._isDiggable = isDiggable;
+        this._isPassable = isPassable;
+        this._isClimable = isClimable;
     }
 
     get type() {
         return this._type;
     }
 
+    get style() {
+        return this._style;
+    }
+
     get isDiggable() {
         return this._isDiggable;
+    }
+
+    get isPassable() {
+        return this._isPassable;
+    }
+
+    get isClimable() {
+        return this._isClimable;
     }
 
     draw(ctx, canvasX, canvasY) {
@@ -29,16 +43,16 @@ export class Tile {
 
 export class EmptyTile extends Tile {
     constructor() {
-        super('empty', null, true);
+        super('empty', 'rgb(255,255,255)', false, true, false);
     }
 
     draw() {}
 }
 
-export var DIRT_TILE_1 = new Tile('dirt_1', 'rgb(89,49,9)', true);
-export var DIRT_TILE_2 = new Tile('dirt_2', 'rgb(40,20,4)', true);
-export var DIRT_TILE_3 = new Tile('dirt_3', 'rgb(140,117,62)', true);
-export var BEDROCK = new Tile('bedrock', 'rgb(33,19,3)', false);
+export var DIRT_TILE_1 = new Tile('dirt_1', 'rgb(89,49,9)', true, false, true);
+export var DIRT_TILE_2 = new Tile('dirt_2', 'rgb(40,20,4)', true, false, true);
+export var DIRT_TILE_3 = new Tile('dirt_3', 'rgb(140,117,62)', true, false, true);
+export var BEDROCK = new Tile('bedrock', 'rgb(33,19,3)', false, false, true);
 export var EMPTY_TILE = new EmptyTile();
 
 export class Grid {
@@ -96,7 +110,29 @@ export class Grid {
         return this.grid[x][y].isDiggable;
     }
 
+    isCellPassable(x, y) {
+        return this.grid[x][y]._isPassable;
+    }
+
+    isCellNextToClimable(x, y) {
+        for (let xi = x - 1; xi <= x + 1; xi++) {
+            for (let yi = y - 1; yi <= y + 1; yi++) {
+                if (this.areValidCoords(xi, yi)
+                        && this.getCell(xi, yi).isClimable) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    areValidCoords(x, y) {
+        return x >= 0 && x < this._width && y >= 0 && y < this._height;
+    }
+
     removeTile(x, y) {
+        let orig = this.grid[x][y]
         this.grid[x][y] = EMPTY_TILE;
+        return orig;
     }
 }

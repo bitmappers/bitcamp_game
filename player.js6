@@ -6,6 +6,7 @@ export class Player {
         this._x = x;
         this._y = y;
         this._game = game;
+        this.inventory = [];
     }
 
     update() {
@@ -13,36 +14,73 @@ export class Player {
         let grid = this._game.grid;
         let newX = this._x;
         let newY = this._y;
-        if (input.isDown(KEYS.LEFT)) {
+        if (input.isDown(KEYS.LEFT) || input.isDown(KEYS.H)) {
             newX--;
         }
-        if (input.isDown(KEYS.RIGHT)) {
+        if (input.isDown(KEYS.RIGHT) || input.isDown(KEYS.L)) {
             newX++;
         }
-        if (input.isDown(KEYS.UP)) {
+        if (input.isDown(KEYS.UP) || input.isDown(KEYS.K)) {
             newY--;
         }
-        if (input.isDown(KEYS.DOWN)) {
+        if (input.isDown(KEYS.DOWN) || input.isDown(KEYS.J)) {
             newY++;
         }
         newX = Math.max(0, newX);
         newX = Math.min(grid.width - 1, newX);
         newY = Math.max(0, newY);
         newY = Math.min(grid.height - 1, newY);
-        if (grid.isCellDiggable(newX, newY)) {
+
+        if (this.canMoveTo(newX, newY)) {
             this._x = newX;
             this._y = newY;
-            grid.removeTile(this._x, this._y);
+        }
+        if (grid.isCellDiggable(this._x, this._y)) {
+            this.inventory.push(grid.removeTile(this._x, this._y));
         }
     }
 
-    draw(ctx) {
+    canMoveTo(x, y) {
+        let grid = this._game.grid;
+        return ((grid.isCellDiggable(x, y) && this.hasSpaceInInventory)
+                || grid.isCellPassable(x, y))
+            && grid.isCellNextToClimable(x, y);
+    }
+
+    get hasSpaceInInventory() {
+        return this.inventory.length < config.inventorySize;
+    }
+
+    draw() {
+        let ctx = this._game.ctx;
         ctx.fillStyle = 'rgb(255,0,0)';
         ctx.fillRect(
                 this._x * config.cellSize,
                 this._y * config.cellSize,
                 config.cellSize,
                 config.cellSize);
+        this.renderInventory();
+    }
+
+    renderInventory() {
+        let innerHTML = '<caption>Inventory</caption>';
+        let headerRow = '<tr>';
+        let colorRow = '<tr>';
+        for (let i = 0; i < config.inventorySize; i++) {
+            headerRow += '<th>';
+            colorRow += '<td';
+            if (i < this.inventory.length) {
+                headerRow += this.inventory[i].type;
+                colorRow += ' style="background-color:'
+                    + this.inventory[i].style + '"';
+            }
+            colorRow += '></td>';
+            headerRow += '</th>';
+        }
+        headerRow += '</tr>';
+        colorRow += '</tr>';
+        innerHTML += headerRow + colorRow;
+        $('#inventoryTable').html(innerHTML);
     }
 
     get x() {
