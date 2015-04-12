@@ -1,5 +1,3 @@
-/* Configuration */
-
 import * as config from "gameconfig.js6";
 import {Grid} from "grid.js6";
 
