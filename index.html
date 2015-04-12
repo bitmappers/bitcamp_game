@@ -3,16 +3,28 @@
   <head>
     <link rel="stylesheet" href="bootstrap.css">
     <title>Bitcamp Game</title>
-
     <script src="jquery.js"></script>
     <script src="traceur-runtime.js"></script>
     <script src="main.js"></script>
+    <style>
+      table.inventory {
+        table-layout: fixed;
+        width: 300px;
+        margin: auto;
+        text-align: center;
+      }
+      table.inventory tr {
+        height: 50px;
+      }
+    </style>
   </head>
   <body>
-    <h1 class="text-center">Game</h1>
-    <canvas id="gameCanvas" width=1024 height=768
-      style="margin:auto;position:absolute;top:0;right:0;bottom:0;left:0;"></canvas>
-    <button id="toggleGameButton"
-      style="position:absolute;top:100px;left:100px;">Toggle Running Game</button>
+      <h1 class="text-center">Game</h1>
+      <canvas id="gameCanvas" width=1024 height=768
+        style="display: block; margin: 0 auto; border: 1px black solid;"></canvas>
+      <button id="toggleGameButton"
+        style="display: block; margin: 0 auto;">Toggle Running Game</button>
+      <table id="inventoryTable" class="inventory">
+      </table>
   </body>
 </html>
