@@ -1,6 +1,7 @@
 import * as config from "gameconfig.js6";
 import {Grid} from "grid.js6";
 import {InputManager, KEYS} from "input.js6";
+import {Player} from "player.js6";
 
 class Game {
     constructor() {
@@ -14,9 +15,22 @@ class Game {
                 config.screenHeight / config.cellSize);
 
         this.inputManager = new InputManager();
+        this.player = new Player(
+                Math.floor(this.grid.width / 2),
+                Math.floor(this.grid.height / 2 - 1),
+                this);
     }
 
     run() {
+        ///////////////////////////////////////////
+        // Update shit
+        ///////////////////////////////////////////
+        this.player.update();
+
+
+        ///////////////////////////////////////////
+        // Draw shit
+        ///////////////////////////////////////////
         this.ctx.fillStyle = config.clearColor;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
@@ -29,6 +43,8 @@ class Game {
                         y * config.cellSize);
             }
         }
+
+        this.player.draw(this.ctx);
 
         // Maintain FPS
         let that = this;

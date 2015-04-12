@@ -68,4 +68,12 @@ export class Grid {
     getCell(x, y) {
         return this.grid[x][y];
     }
+
+    setCell(x, y, v) {
+        this.grid[x][y] = v;
+    }
+
+    removeTile(x, y) {
+        this.grid[x][y] = EMPTY_TILE;
+    }
 }
