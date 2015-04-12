@@ -40,6 +40,7 @@ class Game {
     // Update shit
     ///////////////////////////////////////////
     update() {
+        this.grid.update();
         this.player.update();
 
         // Tell the browser we want to render shit
