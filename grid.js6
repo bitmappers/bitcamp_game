@@ -1,12 +1,14 @@
 import * as config from "gameconfig.js6";
 
 export class Tile {
-    constructor(type, style, isDiggable, isPassable, isClimable) {
+    constructor(type, style, isDiggable, isPassable, isClimable,
+            isStatic) {
         this._type = type;
         this._style = style;
         this._isDiggable = isDiggable;
         this._isPassable = isPassable;
         this._isClimable = isClimable;
+        this._isStatic = isStatic;
     }
 
     get type() {
@@ -29,6 +31,10 @@ export class Tile {
         return this._isClimable;
     }
 
+    get isStatic() {
+        return this._isStatic;
+    }
+
     draw(ctx, canvasX, canvasY) {
         ctx.fillStyle = this._style;
         ctx.fillRect(canvasX, canvasY, config.cellSize, config.cellSize);
@@ -37,16 +43,16 @@ export class Tile {
 
 export class EmptyTile extends Tile {
     constructor() {
-        super('empty', 'rgb(255,255,255)', false, true, false);
+        super('empty', 'rgb(255,255,255)', false, true, false, true);
     }
 
     draw() {}
 }
 
-export var DIRT_TILE_1 = new Tile('dirt_1', 'rgb(89,49,9)', true, false, true);
-export var DIRT_TILE_2 = new Tile('dirt_2', 'rgb(40,20,4)', true, false, true);
-export var DIRT_TILE_3 = new Tile('dirt_3', 'rgb(140,117,62)', true, false, true);
-export var BEDROCK = new Tile('bedrock', 'rgb(33,19,3)', false, false, true);
+export var DIRT_TILE_1 = new Tile('dirt_1', 'rgb(89,49,9)', true, false, true, false);
+export var DIRT_TILE_2 = new Tile('dirt_2', 'rgb(40,20,4)', true, false, true, false);
+export var DIRT_TILE_3 = new Tile('dirt_3', 'rgb(140,117,62)', true, false, true, false);
+export var BEDROCK = new Tile('bedrock', 'rgb(33,19,3)', false, false, true, true);
 export var EMPTY_TILE = new EmptyTile();
 
 export class Grid {
@@ -84,6 +90,23 @@ export class Grid {
         }
     }
 
+    update() {
+        // Apply gravity
+        for (let x = 0; x < this._width; x++) {
+            for (let y = this._height - 2; y >= 0; y--) {
+                if (this.isCellStatic(x, y)
+                        || this.isCellNextToClimable(x, y)) {
+                    continue;
+                }
+                if (this.areValidCoords(x, y + 1)
+                        && this.isCellEmpty(x, y + 1)) {
+                    let t = this.removeTile(x, y);
+                    this.insertTile(x, y + 1, t);
+                }
+            }
+        }
+    }
+
     get width() {
         return this._width;
     }
@@ -108,9 +131,20 @@ export class Grid {
         return this.grid[x][y]._isPassable;
     }
 
+    isCellEmpty(x, y) {
+        return this.grid[x][y] === EMPTY_TILE;
+    }
+
+    isCellStatic(x, y) {
+        return this.grid[x][y].isStatic;
+    }
+
     isCellNextToClimable(x, y) {
         for (let xi = x - 1; xi <= x + 1; xi++) {
             for (let yi = y - 1; yi <= y + 1; yi++) {
+                if (xi === x && yi === y) {
+                    continue;
+                }
                 if (this.areValidCoords(xi, yi)
                         && this.getCell(xi, yi).isClimable) {
                     return true;
@@ -128,5 +162,13 @@ export class Grid {
         let orig = this.grid[x][y]
         this.grid[x][y] = EMPTY_TILE;
         return orig;
+    }
+
+    insertTile(x, y, tile) {
+        if (this.areValidCoords(x, y)) {
+            this.grid[x][y] = tile;
+        } else {
+            throw new Error("Invalid coordinates: " + x + "," + y);
+        }
     }
 }

@@ -6,11 +6,7 @@ export var KEYS = {
     END: 35,
     ENTER: 13,
     ESCAPE: 27,
-    H: 72,
     HOME: 36,
-    J: 74,
-    K: 75,
-    L: 76,
     LEFT: 37,
     NUMPAD_ADD: 107,
     NUMPAD_DECIMAL: 110,
@@ -24,7 +20,15 @@ export var KEYS = {
     RIGHT: 39,
     SPACE: 32,
     TAB: 9,
-    UP: 38
+    UP: 38,
+    A: 65,
+    D: 68,
+    H: 72,
+    J: 74,
+    K: 75,
+    L: 76,
+    S: 83,
+    W: 87
 };
 
 export class InputManager {
