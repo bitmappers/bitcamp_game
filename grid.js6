@@ -1,0 +1,40 @@
+export var TILE_TYPE = {
+    EMPTY: 0,
+    DIRT: 1,
+    ROCK: 2
+};
+
+export class Grid {
+    constructor(gridWidth, gridHeight) {
+        this._width = gridWidth;
+        this._height = gridHeight;
+        this.grid = [];
+        for (let x = 0; x < gridWidth; x++) {
+            let col = [];
+            for (let y = 0; y < gridHeight; y++) {
+                let v = TILE_TYPE.EMPTY;
+                if (y > gridHeight / 2) {
+                    if (Math.random() < 0.2) {
+                        v = TILE_TYPE.ROCK;
+                    } else {
+                        v = TILE_TYPE.DIRT;
+                    }
+                }
+                col.push(v);
+            }
+            this.grid.push(col);
+        }
+    }
+
+    get width() {
+        return this._width;
+    }
+
+    get height() {
+        return this._height;
+    }
+
+    getCell(x, y) {
+        return this.grid[x][y];
+    }
+}
