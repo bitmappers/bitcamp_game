@@ -1,26 +1,57 @@
+import * as config from "gameconfig.js6";
+
 export var TILE_TYPE = {
     EMPTY: 0,
     DIRT: 1,
     ROCK: 2
 };
 
+export class Tile {
+    constructor(type, style) {
+        this._type = type;
+        this._style = style;
+    }
+
+    get type() {
+        return this._type;
+    }
+
+    draw(ctx, canvasX, canvasY) {
+        ctx.fillStyle = this._style;
+        ctx.fillRect(canvasX, canvasY, config.cellSize, config.cellSize);
+    }
+}
+
+export class EmptyTile extends Tile {
+    draw(ctx, canvasX, canvasY) {}
+}
+
+export var DIRT_TILE_1 = new Tile('dirt_1', 'rgb(89,49,9)');
+export var DIRT_TILE_2 = new Tile('dirt_2', 'rgb(40,20,4)');
+export var DIRT_TILE_3 = new Tile('dirt_3', 'rgb(140,117,62)');
+export var EMPTY_TILE = new EmptyTile('empty');
+
 export class Grid {
     constructor(gridWidth, gridHeight) {
         this._width = gridWidth;
         this._height = gridHeight;
         this.grid = [];
+
         for (let x = 0; x < gridWidth; x++) {
             let col = [];
             for (let y = 0; y < gridHeight; y++) {
-                let v = TILE_TYPE.EMPTY;
-                if (y > gridHeight / 2) {
-                    if (Math.random() < 0.2) {
-                        v = TILE_TYPE.ROCK;
-                    } else {
-                        v = TILE_TYPE.DIRT;
-                    }
+                if (y < gridHeight / 2) {
+                    col.push(EMPTY_TILE);
+                    continue;
                 }
-                col.push(v);
+                let v = Math.random();
+                if (v < 0.5) {
+                    col.push(DIRT_TILE_1);
+                } else if (v < 0.7) {
+                    col.push(DIRT_TILE_2);
+                } else {
+                    col.push(DIRT_TILE_3);
+                }
             }
             this.grid.push(col);
         }

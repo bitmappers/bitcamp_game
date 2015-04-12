@@ -1,8 +1,5 @@
-export var clearColor =  'rgb(100, 149, 237)';
-export var FPS =  30;
-export var screenWidth =  1280;
-export var screenHeight =  800;
-export var cellSize =  16;
-
-export var dirtColor =  'rgb(89,49,9)';
-export var rockColor =  'rgb(40,20,4)';
+export var clearColor = 'rgb(100, 149, 237)';
+export var FPS = 30;
+export var screenWidth = 1280;
+export var screenHeight = 800;
+export var cellSize = 16;
