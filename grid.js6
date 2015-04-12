@@ -1,11 +1,5 @@
 import * as config from "gameconfig.js6";
 
-export var TILE_TYPE = {
-    EMPTY: 0,
-    DIRT: 1,
-    ROCK: 2
-};
-
 export class Tile {
     constructor(type, style, isDiggable, isPassable, isClimable) {
         this._type = type;
