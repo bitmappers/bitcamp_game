@@ -18,7 +18,9 @@ class Game {
 
         this.camera = new Camera(
                 config.screenWidth, config.screenHeight,
-                0, 650, config.cellSize);
+                config.worldWidth / 2,
+                config.worldHeight / 2,
+                config.cellSize);
 
         this.inputManager = new InputManager();
         this.player = new Player(
@@ -77,9 +79,10 @@ class Game {
                         (y - topCell) * config.cellSize - vOffset);
             }
         }
-        this.player.draw(this.ctx);
-        
-        this.camera.setPosition(this.camera.x + 1, this.camera.y);
+        this.player.draw(-this.camera.x, -this.camera.y);
+
+        this.camera.follow(this.player.x * config.cellSize,
+                           this.player.y * config.cellSize);
     }
 }
 

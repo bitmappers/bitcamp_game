@@ -3,14 +3,14 @@ import * as config from "gameconfig.js6";
 export class Camera {
 
   /*
-    x and y are the world coordinates of the top-left corner of the
+    x and y are the world coordinates of the center of the
     camera viewport.
     cellSize is the size of each world cell in pixels.
   */
   constructor(displayWidth, displayHeight, x, y) {
     this._displayWidth = displayWidth;
     this._displayHeight = displayHeight;
-    this.setPosition(x, y);
+    this.setPositionCenter(x, y);
   }
 
   set x(x) {
@@ -39,10 +39,52 @@ export class Camera {
     else if (y > config.worldHeight - this._displayHeight)
         y = config.worldHeight - this._displayHeight;
 
-    
-
     this._x = x;
     this._y = y;
+  }
+
+  setPositionCenter(x, y) {
+    this.setPosition(x - this._displayWidth / 2, y - this._displayHeight / 2);
+  }
+
+  /*
+    Move the camera to be centered on the given world coordinate position.
+    This moves the camera at a constant speed until it reaches the target
+    position.
+  */
+  follow(x, y) {
+    var goalX = x - this._displayWidth / 2;
+    var goalY = y - this._displayHeight / 2;
+
+    //this.setPosition((this._x + (goalX - this._x)) / 2,
+    //                 (this._y + (goalY - this._y)) / 2);
+    /*
+    var newX = this._x;
+    var newY = this._y;
+    if (this._x < goalX)
+      newX += 2;
+    else if (this._x > goalX)
+      newX -= 2;
+    if (this._y < goalY)
+      newY += 2;
+    else if (this._y > goalY)
+      newY -= 2;
+    this.setPosition(newX, newY);
+    */
+
+    // Directly to player
+    this.setPosition(goalX, goalY);
+
+    /*
+    if (this._x < goalX)
+      this._x += 2;
+    else if (this._x > goalX)
+      this._x -= 2;
+    if (this._y < goalY)
+      this._y += 2;
+    else if (this._x > goalY)
+      this._y -= 2;
+    */
   }
   
   /*

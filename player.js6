@@ -51,12 +51,12 @@ export class Player {
         return this.inventory.length < config.inventorySize;
     }
 
-    draw() {
+    draw(offsetX, offsetY) {
         let ctx = this._game.ctx;
         ctx.fillStyle = 'rgb(255,0,0)';
         ctx.fillRect(
-                this._x * config.cellSize,
-                this._y * config.cellSize,
+                this._x * config.cellSize + offsetX,
+                this._y * config.cellSize + offsetY,
                 config.cellSize,
                 config.cellSize);
         this.renderInventory();
