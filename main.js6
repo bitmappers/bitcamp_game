@@ -1,14 +1,6 @@
 /* Configuration */
-var config = {
-    clearColor: 'rgb(100, 149, 237)',
-    FPS: 30,
-    screenWidth: 1280,
-    screenHeight: 800,
-    cellSize: 16,
 
-    dirtColor: 'rgb(89,49,9)',
-    rockColor: 'rgb(40,20,4)'
-};
+import * as config from "gameconfig.js6";
 
 var TILE_TYPE = {
     EMPTY: 0,
