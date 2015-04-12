@@ -1,20 +1,95 @@
 /* Configuration */
 var config = {
     clearColor: 'rgb(100, 149, 237)',
-    FPS: 60
+    FPS: 30,
+    screenWidth: 1280,
+    screenHeight: 800,
+    cellSize: 16,
+
+    dirtColor: 'rgb(89,49,9)',
+    rockColor: 'rgb(40,20,4)'
+};
+
+var TILE_TYPE = {
+    EMPTY: 0,
+    DIRT: 1,
+    ROCK: 2
 };
 
 class Game {
     constructor() {
         this.canvas = document.getElementById('gameCanvas');
+        this.canvas.width = config.screenWidth;
+        this.canvas.height = config.screenHeight;
         this.ctx = this.canvas.getContext('2d');
+
+        this.grid = new Grid(
+                config.screenWidth / config.cellSize,
+                config.screenHeight / config.cellSize);
     }
 
     run() {
         this.ctx.fillStyle = config.clearColor;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+        // Draw the grid
+        for (let x = 0; x < this.grid.width; x++) {
+            for (let y = 0; y < this.grid.height; y++) {
+                let v = this.grid.getCell(x, y);
+                if (v == TILE_TYPE.EMPTY) {
+                    continue;
+                }
+                if (v == TILE_TYPE.DIRT) {
+                    this.ctx.fillStyle = config.dirtColor;
+                } else {
+                    this.ctx.fillStyle = config.rockColor;
+                }
+                this.ctx.fillRect(
+                        x * config.cellSize,
+                        y * config.cellSize,
+                        config.cellSize,
+                        config.cellSize);
+            }
+        }
+
+        // Maintain FPS
         let that = this;
-        setTimeout(function() {this.run.apply(that);}, 1000 / FPS);
+        setTimeout(function() {that.run.apply(that);}, 1000 / config.FPS);
+    }
+}
+
+class Grid {
+    constructor(gridWidth, gridHeight) {
+        this._width = gridWidth;
+        this._height = gridHeight;
+        this.grid = [];
+        for (let x = 0; x < gridWidth; x++) {
+            let col = [];
+            for (let y = 0; y < gridHeight; y++) {
+                let v = TILE_TYPE.EMPTY;
+                if (y > gridHeight / 2) {
+                    if (Math.random() < 0.2) {
+                        v = TILE_TYPE.ROCK;
+                    } else {
+                        v = TILE_TYPE.DIRT;
+                    }
+                }
+                col.push(v);
+            }
+            this.grid.push(col);
+        }
+    }
+
+    get width() {
+        return this._width;
+    }
+
+    get height() {
+        return this._height;
+    }
+
+    getCell(x, y) {
+        return this.grid[x][y];
     }
 }
 
