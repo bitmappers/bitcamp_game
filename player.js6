@@ -10,6 +10,7 @@ export class Player {
     }
 
     update() {
+        // Handle movement shit
         let input = this._game.inputManager;
         let grid = this._game.grid;
         let newX = this._x;
@@ -37,6 +38,28 @@ export class Player {
         }
         if (grid.isCellDiggable(this._x, this._y)) {
             this.inventory.push(grid.removeTile(this._x, this._y));
+        }
+
+        // Handle putting stuff down shit
+        var that = this;
+        function tryPlaceBlock(x, y) {
+            if (grid.areValidCoords(x, y)
+                    && grid.isCellEmpty(x, y)
+                    && that.inventory.length > 0) {
+                grid.insertTile(x, y, that.inventory.shift());
+            }
+        }
+        if (input.isDown(KEYS.A)) {
+            tryPlaceBlock(this._x - 1, this._y);
+        }
+        if (input.isDown(KEYS.D)) {
+            tryPlaceBlock(this._x + 1, this._y);
+        }
+        if (input.isDown(KEYS.W)) {
+            tryPlaceBlock(this._x, this._y - 1);
+        }
+        if (input.isDown(KEYS.S)) {
+            tryPlaceBlock(this._x, this._y + 1);
         }
     }
 

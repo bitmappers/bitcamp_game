@@ -108,6 +108,10 @@ export class Grid {
         return this.grid[x][y]._isPassable;
     }
 
+    isCellEmpty(x, y) {
+        return this.grid[x][y] === EMPTY_TILE;
+    }
+
     isCellNextToClimable(x, y) {
         for (let xi = x - 1; xi <= x + 1; xi++) {
             for (let yi = y - 1; yi <= y + 1; yi++) {
@@ -128,5 +132,13 @@ export class Grid {
         let orig = this.grid[x][y]
         this.grid[x][y] = EMPTY_TILE;
         return orig;
+    }
+
+    insertTile(x, y, tile) {
+        if (this.areValidCoords(x, y)) {
+            this.grid[x][y] = tile;
+        } else {
+            throw new Error("Invalid coordinates: " + x + "," + y);
+        }
     }
 }
