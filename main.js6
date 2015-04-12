@@ -21,16 +21,35 @@ class Game {
                 this);
     }
 
-    run() {
-        ///////////////////////////////////////////
-        // Update shit
-        ///////////////////////////////////////////
+    start() {
+        this._intervalID = setInterval(
+                this.update.bind(this),
+                1000 / config.updatesPerSecond);
+    }
+
+    stop() {
+        clearInterval(this._intervalID);
+        delete this._intervalID;
+    }
+
+    get isRunning() {
+        return !!this._intervalID;
+    }
+
+    ///////////////////////////////////////////
+    // Update shit
+    ///////////////////////////////////////////
+    update() {
         this.player.update();
 
+        // Tell the browser we want to render shit
+        requestAnimationFrame(this.draw.bind(this));
+    }
 
-        ///////////////////////////////////////////
-        // Draw shit
-        ///////////////////////////////////////////
+    ///////////////////////////////////////////
+    // Draw shit
+    ///////////////////////////////////////////
+    draw() {
         this.ctx.fillStyle = config.clearColor;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
@@ -45,15 +64,19 @@ class Game {
         }
 
         this.player.draw(this.ctx);
-
-        // Maintain FPS
-        let that = this;
-        setTimeout(function() {that.run.apply(that);}, 1000 / config.FPS);
     }
 }
 
-
 $(function() {
     let game = new Game();
-    game.run();
+    game.start();
+
+    $('#toggleGameButton').click(function() {
+        if (game.isRunning) {
+            game.stop();
+        } else {
+            game.start();
+        }
+    });
 });
+
