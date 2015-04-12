@@ -11,24 +11,29 @@ export class Player {
     update() {
         let input = this._game.inputManager;
         let grid = this._game.grid;
+        let newX = this._x;
+        let newY = this._y;
         if (input.isDown(KEYS.LEFT)) {
-            this._x--;
+            newX--;
         }
         if (input.isDown(KEYS.RIGHT)) {
-            this._x++;
+            newX++;
         }
         if (input.isDown(KEYS.UP)) {
-            this._y--;
+            newY--;
         }
         if (input.isDown(KEYS.DOWN)) {
-            this._y++;
+            newY++;
         }
-        this._x = Math.max(0, this._x);
-        this._x = Math.min(grid.width - 1, this._x);
-        this._y = Math.max(0, this._y);
-        this._y = Math.min(grid.height - 1, this._y);
-
-        grid.removeTile(this._x, this._y);
+        newX = Math.max(0, newX);
+        newX = Math.min(grid.width - 1, newX);
+        newY = Math.max(0, newY);
+        newY = Math.min(grid.height - 1, newY);
+        if (grid.isCellDiggable(newX, newY)) {
+            this._x = newX;
+            this._y = newY;
+            grid.removeTile(this._x, this._y);
+        }
     }
 
     draw(ctx) {
