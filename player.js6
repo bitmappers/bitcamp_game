@@ -13,16 +13,16 @@ export class Player {
         let grid = this._game.grid;
         let newX = this._x;
         let newY = this._y;
-        if (input.isDown(KEYS.LEFT)) {
+        if (input.isDown(KEYS.LEFT) || input.isDown(KEYS.H)) {
             newX--;
         }
-        if (input.isDown(KEYS.RIGHT)) {
+        if (input.isDown(KEYS.RIGHT) || input.isDown(KEYS.L)) {
             newX++;
         }
-        if (input.isDown(KEYS.UP)) {
+        if (input.isDown(KEYS.UP) || input.isDown(KEYS.K)) {
             newY--;
         }
-        if (input.isDown(KEYS.DOWN)) {
+        if (input.isDown(KEYS.DOWN) || input.isDown(KEYS.J)) {
             newY++;
         }
         newX = Math.max(0, newX);
