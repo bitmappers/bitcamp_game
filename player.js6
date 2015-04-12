@@ -1,0 +1,55 @@
+import {KEYS} from "input.js6";
+import * as config from "gameconfig.js6";
+
+export class Player {
+    constructor(x, y, game) {
+        this._x = x;
+        this._y = y;
+        this._game = game;
+    }
+
+    update() {
+        let input = this._game.inputManager;
+        let grid = this._game.grid;
+        let newX = this._x;
+        let newY = this._y;
+        if (input.isDown(KEYS.LEFT)) {
+            newX--;
+        }
+        if (input.isDown(KEYS.RIGHT)) {
+            newX++;
+        }
+        if (input.isDown(KEYS.UP)) {
+            newY--;
+        }
+        if (input.isDown(KEYS.DOWN)) {
+            newY++;
+        }
+        newX = Math.max(0, newX);
+        newX = Math.min(grid.width - 1, newX);
+        newY = Math.max(0, newY);
+        newY = Math.min(grid.height - 1, newY);
+        if (grid.isCellDiggable(newX, newY)) {
+            this._x = newX;
+            this._y = newY;
+            grid.removeTile(this._x, this._y);
+        }
+    }
+
+    draw(ctx) {
+        ctx.fillStyle = 'rgb(255,0,0)';
+        ctx.fillRect(
+                this._x * config.cellSize,
+                this._y * config.cellSize,
+                config.cellSize,
+                config.cellSize);
+    }
+
+    get x() {
+        return this._x;
+    }
+
+    get y() {
+        return this._y;
+    }
+}

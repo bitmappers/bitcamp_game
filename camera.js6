@@ -3,75 +3,74 @@ import * as config from "gameconfig.js6";
 export class Camera {
 
   /*
-    posX and posY are the world coordinates of the top-left corner of the
+    x and y are the world coordinates of the top-left corner of the
     camera viewport.
     cellSize is the size of each world cell in pixels.
   */
-  constructor(displayWidth, displayHeight, posX, posY) {
+  constructor(displayWidth, displayHeight, x, y) {
     this._displayWidth = displayWidth;
     this._displayHeight = displayHeight;
-    this._posX = posX;
-    this._posY = posY;
+    this.setPosition(x, y);
   }
 
-  set posX(posX) {
-    this._posX = posX;
+  set x(x) {
+    this._x = x;
   }
 
-  set posY(posY) {
-    this._posY = posY;
+  set y(y) {
+    this._y = y;
   }
 
-  get posX() {
-    return this._posX;
+  get x() {
+    return this._x;
   }
   
-  get posY() {
-    return this._posY;
+  get y() {
+    return this._y;
   }
   
-  setPosition(posX, posY) {
-    if (posX < 0)
-        posX = 0;
-    else if (posX > config.worldWidth - this._displayWidth)
-        posX = config.worldWidth - this._displayWidth;
-    if (posY < 0)
-        posY = 0;
-    else if (posY > config.worldHeight - this._displayHeight)
-        posY = config.worldHeight - this._displayHeight;
+  setPosition(x, y) {
+    if (x < 0)
+        x = 0;
+    else if (x > config.worldWidth - this._displayWidth)
+        x = config.worldWidth - this._displayWidth;
+    if (y < 0)
+        y = 0;
+    else if (y > config.worldHeight - this._displayHeight)
+        y = config.worldHeight - this._displayHeight;
 
     
 
-    this._posX = posX;
-    this._posY = posY;
+    this._x = x;
+    this._y = y;
   }
   
   /*
     Returns the index of the first visible column within the camera viewport.
   */
   leftCell() {
-    return Math.floor(this._posX / config.cellSize);
+    return Math.floor(this._x / config.cellSize);
   }
 
   /*
     Returns the index of the last visible column wihtin the camera viewport.
   */
   rightCell() {
-    return Math.ceil((this._posX + this._displayWidth) / config.cellSize);
+    return Math.ceil((this._x + this._displayWidth) / config.cellSize);
   }
 
   /*
     Returns the index of the first visible row wihtin the camera viewport.
   */
   topCell() {
-    return Math.floor(this._posY / config.cellSize);
+    return Math.floor(this._y / config.cellSize);
   }
 
   /*
     Returns the index of the last visible row wihtin the camera viewport.
   */
   bottomCell() {
-    return Math.ceil((this._posY + this._displayHeight) / config.cellSize);
+    return Math.ceil((this._y + this._displayHeight) / config.cellSize);
   }
 
   /*
@@ -79,7 +78,7 @@ export class Camera {
     sub-tile camera positions.
   */
   horizontalOffset() {
-    return this._posX % config.cellSize;
+    return this._x % config.cellSize;
   }
 
   /*
@@ -87,7 +86,7 @@ export class Camera {
      sub-tile camera positions.
    */
   verticalOffset() {
-    return this._posY % config.cellSize;
+    return this._y % config.cellSize;
   }
 }
 

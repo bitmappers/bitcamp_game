@@ -7,13 +7,18 @@ export var TILE_TYPE = {
 };
 
 export class Tile {
-    constructor(type, style) {
+    constructor(type, style, isDiggable) {
         this._type = type;
         this._style = style;
+        this._isDiggable = isDiggable;
     }
 
     get type() {
         return this._type;
+    }
+
+    get isDiggable() {
+        return this._isDiggable;
     }
 
     draw(ctx, canvasX, canvasY) {
@@ -23,13 +28,18 @@ export class Tile {
 }
 
 export class EmptyTile extends Tile {
-    draw(ctx, canvasX, canvasY) {}
+    constructor() {
+        super('empty', null, true);
+    }
+
+    draw() {}
 }
 
-export var DIRT_TILE_1 = new Tile('dirt_1', 'rgb(89,49,9)');
-export var DIRT_TILE_2 = new Tile('dirt_2', 'rgb(40,20,4)');
-export var DIRT_TILE_3 = new Tile('dirt_3', 'rgb(140,117,62)');
-export var EMPTY_TILE = new EmptyTile('empty');
+export var DIRT_TILE_1 = new Tile('dirt_1', 'rgb(89,49,9)', true);
+export var DIRT_TILE_2 = new Tile('dirt_2', 'rgb(40,20,4)', true);
+export var DIRT_TILE_3 = new Tile('dirt_3', 'rgb(140,117,62)', true);
+export var BEDROCK = new Tile('bedrock', 'rgb(33,19,3)', false);
+export var EMPTY_TILE = new EmptyTile();
 
 export class Grid {
     constructor(gridWidth, gridHeight) {
@@ -40,10 +50,19 @@ export class Grid {
         for (let x = 0; x < gridWidth; x++) {
             let col = [];
             for (let y = 0; y < gridHeight; y++) {
+                if (y == gridHeight - 1
+                        || y == 0
+                        || x == 0
+                        || x == gridWidth - 1) {
+                    col.push(BEDROCK);
+                    continue;
+                }
                 if (y < gridHeight / 2) {
                     col.push(EMPTY_TILE);
                     continue;
                 }
+
+                // Normal dirt
                 let v = Math.random();
                 if (v < 0.5) {
                     col.push(DIRT_TILE_1);
@@ -67,5 +86,17 @@ export class Grid {
 
     getCell(x, y) {
         return this.grid[x][y];
+    }
+
+    setCell(x, y, v) {
+        this.grid[x][y] = v;
+    }
+
+    isCellDiggable(x, y) {
+        return this.grid[x][y].isDiggable;
+    }
+
+    removeTile(x, y) {
+        this.grid[x][y] = EMPTY_TILE;
     }
 }

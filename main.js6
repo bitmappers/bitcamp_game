@@ -2,11 +2,8 @@ import * as config from "gameconfig.js6";
 import {Grid} from "grid.js6";
 import {Camera} from "camera.js6";
 
-var TILE_TYPE = {
-    EMPTY: 0,
-    DIRT: 1,
-    ROCK: 2
-};
+import {InputManager, KEYS} from "input.js6";
+import {Player} from "player.js6";
 
 class Game {
     constructor() {
@@ -22,9 +19,43 @@ class Game {
         this.camera = new Camera(
                 config.screenWidth, config.screenHeight,
                 0, 650, config.cellSize);
+
+        this.inputManager = new InputManager();
+        this.player = new Player(
+                Math.floor(this.grid.width / 2),
+                Math.floor(this.grid.height / 2 - 1),
+                this);
     }
 
-    run() {
+    start() {
+        this._intervalID = setInterval(
+                this.update.bind(this),
+                1000 / config.updatesPerSecond);
+    }
+
+    stop() {
+        clearInterval(this._intervalID);
+        delete this._intervalID;
+    }
+
+    get isRunning() {
+        return !!this._intervalID;
+    }
+
+    ///////////////////////////////////////////
+    // Update shit
+    ///////////////////////////////////////////
+    update() {
+        this.player.update();
+
+        // Tell the browser we want to render shit
+        requestAnimationFrame(this.draw.bind(this));
+    }
+
+    ///////////////////////////////////////////
+    // Draw shit
+    ///////////////////////////////////////////
+    draw() {
         this.ctx.fillStyle = config.clearColor;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
@@ -46,18 +77,22 @@ class Game {
                         (y - topCell) * config.cellSize - vOffset);
             }
         }
-
-        // Temporary shift camera
-        this.camera.setPosition(this.camera.posX - 1, this.camera.posY + 1);
-
-        // Maintain FPS
-        let that = this;
-        setTimeout(function() {that.run.apply(that);}, 1000 / config.FPS);
+        this.player.draw(this.ctx);
+        
+        this.camera.setPosition(this.camera.x + 1, this.camera.y);
     }
 }
 
-
 $(function() {
     let game = new Game();
-    game.run();
+    game.start();
+
+    $('#toggleGameButton').click(function() {
+        if (game.isRunning) {
+            game.stop();
+        } else {
+            game.start();
+        }
+    });
 });
+
