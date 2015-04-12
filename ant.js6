@@ -1,0 +1,46 @@
+import * as config from "gameconfig.js6";
+
+export class Ant {
+    constructor(x, y, game) {
+        this._x = x;
+        this._y = y;
+        this._game = game;
+        this._startX = x;
+        this._startY = y;
+        this._hasFood = false;
+    }
+
+    update() {
+        let grid = this._game.grid;
+        let options = [[-1,-1],[0,-1],[1,-1],
+                       [-1, 0],       [1, 0],
+                       [-1, 1],[0, 1],[1, 1]];
+        for (let i = 0; i < options.length; i++) {
+            let x = this._x + options[i][0];
+            let y = this._y + options[i][1];
+            if (!grid.areValidCoords(x, y)
+                || !grid.isCellEmpty(this._x + options[i][0],
+                                    this._y + options[i][1])) {
+                options.splice(i, 1);
+                i--;
+            }
+        }
+
+        // Now we have the surrounding empty spaces
+        let choice = Math.floor(Math.random() * options.length);
+
+        this._x += options[choice][0];
+        this._y += options[choice][1];
+    }
+
+    draw(offsetX, offsetY) {
+        let ctx = this._game.ctx;
+        ctx.fillStyle = 'rgb(0, 0, 0)';
+        ctx.fillRect(
+                this._x * config.cellSize + offsetX,
+                this._y * config.cellSize + offsetY,
+                config.cellSize,
+                config.cellSize);
+    }
+}
+ 
