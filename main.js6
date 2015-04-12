@@ -1,0 +1,24 @@
+/* Configuration */
+var config = {
+    clearColor: 'rgb(100, 149, 237)',
+    FPS: 60
+};
+
+class Game {
+    constructor() {
+        this.canvas = document.getElementById('gameCanvas');
+        this.ctx = this.canvas.getContext('2d');
+    }
+
+    run() {
+        this.ctx.fillStyle = config.clearColor;
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        let that = this;
+        setTimeout(function() {this.run.apply(that);}, 1000 / FPS);
+    }
+}
+
+$(function() {
+    let game = new Game();
+    game.run();
+});
