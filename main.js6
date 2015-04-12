@@ -63,7 +63,7 @@ class Game {
             }
         }
 
-        this.player.draw(this.ctx);
+        this.player.draw();
     }
 }
 

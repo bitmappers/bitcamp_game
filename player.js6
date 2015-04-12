@@ -40,7 +40,8 @@ export class Player {
         }
     }
 
-    draw(ctx) {
+    draw() {
+        let ctx = this._game.ctx;
         ctx.fillStyle = 'rgb(255,0,0)';
         ctx.fillRect(
                 this._x * config.cellSize,
