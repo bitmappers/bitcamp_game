@@ -1,5 +1,8 @@
 export var clearColor = 'rgb(100, 149, 237)';
 export var FPS = 30;
-export var screenWidth = 1280;
-export var screenHeight = 800;
-export var cellSize = 16;
+export var screenWidth    = 500;
+export var screenHeight   = 300;
+export var worldWidth     = 2000;
+export var worldHeight    = 1000;
+export var cellSize       = 16;
+

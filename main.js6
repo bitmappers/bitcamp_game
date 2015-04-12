@@ -1,5 +1,12 @@
 import * as config from "gameconfig.js6";
 import {Grid} from "grid.js6";
+import {Camera} from "camera.js6";
+
+var TILE_TYPE = {
+    EMPTY: 0,
+    DIRT: 1,
+    ROCK: 2
+};
 
 class Game {
     constructor() {
@@ -9,8 +16,12 @@ class Game {
         this.ctx = this.canvas.getContext('2d');
 
         this.grid = new Grid(
-                config.screenWidth / config.cellSize,
-                config.screenHeight / config.cellSize);
+                config.worldWidth / config.cellSize,
+                config.worldHeight / config.cellSize);
+
+        this.camera = new Camera(
+                config.screenWidth, config.screenHeight,
+                0, 650, config.cellSize);
     }
 
     run() {
@@ -18,14 +29,26 @@ class Game {
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
         // Draw the grid
-        for (let x = 0; x < this.grid.width; x++) {
-            for (let y = 0; y < this.grid.height; y++) {
+        var leftCell = this.camera.leftCell();
+        var rightCell = this.camera.rightCell();
+        var topCell = this.camera.topCell();
+        var bottomCell = this.camera.bottomCell();
+        var hOffset = this.camera.horizontalOffset();
+        var vOffset = this.camera.verticalOffset();
+        //console.log(leftCell + "-" + rightCell + "(" + hOffset + "), "
+        //            + topCell + "-" + bottomCell + "(" + vOffset + ") | "
+        //            + this.camera.posX + ", " + this.camera.posY);
+        for (let x = leftCell; x < rightCell; x++) {
+            for (let y = topCell; y < bottomCell; y++) {
                 this.grid.getCell(x, y).draw(
                         this.ctx,
-                        x * config.cellSize,
-                        y * config.cellSize);
+                        (x - leftCell) * config.cellSize - hOffset,
+                        (y - topCell) * config.cellSize - vOffset);
             }
         }
+
+        // Temporary shift camera
+        this.camera.setPosition(this.camera.posX - 1, this.camera.posY + 1);
 
         // Maintain FPS
         let that = this;
